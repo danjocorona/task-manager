@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="dashboard-page">
+
+  <!-- ─── NAVBAR ──────────────────────────────────────────── -->
+  <nav class="dash-nav">
+    <span class="auth-logo">Task<span>Flow</span></span>
+    <div class="dash-nav-right">
+      <span class="dash-username" id="dash-username"></span>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN LAYOUT ─────────────────────────────────────── -->
+  <main class="dash-main">
+
+    <!-- SUMMARY CARDS -->
+    <section class="summary-grid" id="summary-grid">
+      <div class="summary-card">
+        <span class="summary-num" id="sum-total">—</span>
+        <span class="summary-lbl">Total</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-num accent-blue" id="sum-todo">—</span>
+        <span class="summary-lbl">To Do</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-num accent-purple" id="sum-inprog">—</span>
+        <span class="summary-lbl">In Progress</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-num accent-green" id="sum-done">—</span>
+        <span class="summary-lbl">Done</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-num accent-red" id="sum-overdue">—</span>
+        <span class="summary-lbl">Overdue</span>
+      </div>
+    </section>
+
+    <!-- TOOLBAR -->
+    <div class="dash-toolbar">
+      <div class="filter-group">
+        <label class="form-label" for="filter-status">STATUS</label>
+        <select class="form-select" id="filter-status">
+          <option value="">All</option>
+          <option value="todo">To Do</option>
+          <option value="in_progress">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="form-label" for="filter-priority">PRIORITY</label>
+        <select class="form-select" id="filter-priority">
+          <option value="">All</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" id="open-add-modal">+ New Task</button>
+    </div>
+
+    <!-- TASK LIST -->
+    <section class="task-list" id="task-list">
+      <!-- Tasks are injected here by tasks.js -->
+      <div class="task-empty hidden" id="task-empty">
+        <p>No tasks yet.</p>
+        <p>Click <strong>+ New Task</strong> to get started.</p>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ─── ADD / EDIT TASK MODAL ───────────────────────────── -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">New Task</h2>
+        <button class="modal-close" id="modal-close" aria-label="Close modal">✕</button>
+      </div>
+
+      <form class="modal-form" id="task-form" novalidate>
+
+        <!-- Hidden field — stores task id when editing -->
+        <input type="hidden" id="task-id" />
+
+        <div class="form-group">
+          <label class="form-label" for="task-title">TITLE <span class="required">*</span></label>
+          <input
+            class="form-input"
+            type="text"
+            id="task-title"
+            placeholder="What needs to be done?"
+            maxlength="100"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="task-desc">DESCRIPTION</label>
+          <textarea
+            class="form-textarea"
+            id="task-desc"
+            placeholder="Optional details..."
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="task-due">DUE DATE</label>
+            <input class="form-input" type="date" id="task-due" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="task-priority">PRIORITY</label>
+            <select class="form-select" id="task-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="task-status">STATUS</label>
+            <select class="form-select" id="task-status">
+              <option value="todo" selected>To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-status" id="task-form-status" role="alert" aria-live="polite"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="task-submit-btn">Create Task</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── DELETE CONFIRM MODAL ────────────────────────────── -->
+  <div class="modal-overlay hidden" id="delete-overlay">
+    <div class="modal modal-sm" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title">Delete Task</h2>
+        <button class="modal-close" id="delete-modal-close" aria-label="Close">✕</button>
+      </div>
+      <p class="delete-confirm-text">Are you sure you want to delete this task? This cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="delete-cancel">Cancel</button>
+        <button class="btn btn-danger" id="delete-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/tasks.js"></script>
+</body>
+</html>
