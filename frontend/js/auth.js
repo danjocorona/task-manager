@@ -6,7 +6,7 @@
    - Redirects to dashboard.html on success
    ============================================================ */
 
-const API = 'http://127.0.0.1:8000';
+const API = 'https://task-manager-production-fa56.up.railway.app';
 
 
 /* ─── TAB SWITCHING ───────────────────────────────────────── */

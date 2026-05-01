@@ -35,7 +35,7 @@ app = FastAPI(
 # to make requests to this API. Restrict origins before deploying.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Tighten this to your frontend URL in production
+    allow_origins=["https://danjocorona.github.io"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
