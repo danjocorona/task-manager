@@ -7,7 +7,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
  
-import bcrypt
+import bcrypt, os
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -18,7 +18,7 @@ from models import User
 
 # ────────────────── CONFIGURATION ─────────────────────────────
 
-SECRET_KEY = "c0d92d5e3720b4ca93cfb98d953b97c4fa9ff9b8163fa67145597d54ada12327"
+SECRET_KEY = os.environ.get("SECRET_KEY", "local-dev-fallback-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24   # Tokens expire after 24 hours
 
