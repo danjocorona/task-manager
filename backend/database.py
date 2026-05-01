@@ -1,35 +1,47 @@
+# database.py
 # Handles the database engine and session lifecycle.
-# SQLModel uses SQLAlchemy under the hood, create_engine sets up
-# the connection, while get_session is a FastAPI dependency that
-# opens a session per request and closes it cleanly when done.
+#
+# In production (Railway), reads DATABASE_URL from environment variables
+# which points to the PostgreSQL instance Railway provides.
+#
+# In local development, falls back to SQLite for zero-config setup.
 
+import os
 from sqlmodel import SQLModel, create_engine, Session
 
-# SQLite file-based database - stored in the backend folder.
-# check_same_thread=False is required for SQLite with FastAPI
-# because FastAPI can handle multiple threads.
-DATABASE_URL = "sqlite:///./taskmanager.db"
+# Railway automatically sets DATABASE_URL when you add a PostgreSQL database.
+# Locally this will be None so we fall back to SQLite.
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    # Railway gives a postgres:// URL but SQLAlchemy needs postgresql://
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    connect_args = {}  # PostgreSQL doesn't need check_same_thread
+else:
+    # Local development — use SQLite
+    DATABASE_URL = "sqlite:///./taskmanager.db"
+    connect_args = {"check_same_thread": False}
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    echo=False  # Set to True to print all SQL queries
+    connect_args=connect_args,
+    echo=False  # Set to True to print SQL queries while debugging
 )
+
 
 def create_db_and_tables():
     """
-    Create all database tables defined by SQLModel models.
-    Called once on application startup in main.py
+    Creates all database tables defined by SQLModel models.
+    Called once on application startup in main.py.
     """
     SQLModel.metadata.create_all(engine)
 
+
 def get_session():
     """
-    FastAPI dependency - yields a database session for each request
-    and guarantees it is closed afterwards, even if an error occurs.
-
-    Usage in a route:
-        def my_route(session: Session = Depends(get_session)):
+    FastAPI dependency — yields a database session per request
+    and guarantees it closes afterwards, even if an error occurs.
     """
     with Session(engine) as session:
         yield session
