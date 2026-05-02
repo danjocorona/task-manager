@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="auth-wrapper">
+
+    <!-- Branding -->
+    <div class="auth-brand">
+      <span class="auth-logo">Task<span>Flow</span></span>
+      <p class="auth-tagline">Manage your work. Ship what matters.</p>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+
+      <!-- Tab switcher -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="showTab('login')">Login</button>
+        <button class="auth-tab" id="tab-register" onclick="showTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form class="auth-form" id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-username">USERNAME</label>
+          <input
+            class="form-input"
+            type="text"
+            id="login-username"
+            name="username"
+            placeholder="your username"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">PASSWORD</label>
+          <input
+            class="form-input"
+            type="password"
+            id="login-password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        <div class="form-status" id="login-status" role="alert" aria-live="polite"></div>
+        <button class="btn btn-primary btn-full" type="submit" id="login-btn">
+          Login
+        </button>
+        <p class="auth-switch">
+          Don't have an account?
+          <button type="button" class="link-btn" onclick="showTab('register')">Register here</button>
+        </p>
+      </form>
+
+      <!-- REGISTER FORM (hidden by default) -->
+      <form class="auth-form hidden" id="register-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="reg-username">USERNAME</label>
+          <input
+            class="form-input"
+            type="text"
+            id="reg-username"
+            name="username"
+            placeholder="choose a username"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">EMAIL</label>
+          <input
+            class="form-input"
+            type="email"
+            id="reg-email"
+            name="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-password">PASSWORD</label>
+          <input
+            class="form-input"
+            type="password"
+            id="reg-password"
+            name="password"
+            placeholder="min. 6 characters"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+        <div class="form-status" id="register-status" role="alert" aria-live="polite"></div>
+        <button class="btn btn-primary btn-full" type="submit" id="register-btn">
+          Create Account
+        </button>
+        <p class="auth-switch">
+          Already have an account?
+          <button type="button" class="link-btn" onclick="showTab('login')">Login here</button>
+        </p>
+      </form>
+
+    </div>
+
+    <p class="auth-footer">
+      Built with FastAPI · SQLite · Vanilla JS
+    </p>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
